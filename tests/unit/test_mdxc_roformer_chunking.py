@@ -73,7 +73,7 @@ class TestMDXCRoformerChunking:
             "audio_separator.separator.architectures.mdxc_separator.tqdm",
             side_effect=lambda values: chunk_starts.extend(values) or values,
         ):
-            separator.demix(np.ones((2, 16), dtype=np.float32))
+            separator.demix(np.ones((2, 20), dtype=np.float32))
 
         assert chunk_starts == [0, 4, 8, 12]
 

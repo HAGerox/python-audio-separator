@@ -101,7 +101,7 @@ def test_cli_multiple_filenames():
 # Test the CLI with a specific audio file
 def test_cli_with_audio_file(capsys, common_expected_args):
     test_args = ["cli.py", "test_audio.mp3", "--model_filename=UVR-MDX-NET-Inst_HQ_4.onnx"]
-    with patch("audio_separator.separator.Separator.separate") as mock_separate:
+    with patch("audio_separator.separator.Separator.separate") as mock_separate, patch("audio_separator.separator.Separator.load_model"):
         mock_separate.return_value = ["output_file.mp3"]
         with patch("sys.argv", test_args):
             # Call the main function in cli.py
