@@ -732,6 +732,17 @@ class Separator:
         """
         model_path = os.path.join(self.model_file_dir, f"{model_filename}")
 
+        # Stem Separator can provision registry models independently of the
+        # audio-separator catalogue. A verified checkpoint accompanied by a
+        # same-named YAML config is enough to load any supported RoFormer.
+        local_yaml_filename = f"{os.path.splitext(model_filename)[0]}.yaml"
+        local_yaml_path = os.path.join(self.model_file_dir, local_yaml_filename)
+        if os.path.isfile(model_path) and os.path.isfile(local_yaml_path):
+            self.logger.info(f"Using externally provisioned model {model_filename} with {local_yaml_filename}")
+            self.model_friendly_name = os.path.splitext(model_filename)[0]
+            self.model_is_uvr_vip = False
+            return model_filename, "MDXC", self.model_friendly_name, model_path, local_yaml_filename
+
         supported_model_files_grouped = self.list_supported_model_files()
         public_model_repo_url_prefix = "https://github.com/TRvlvr/model_repo/releases/download/all_public_uvr_models"
         vip_model_repo_url_prefix = "https://github.com/Anjok0109/ai_magic/releases/download/v5"
