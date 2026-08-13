@@ -1,5 +1,6 @@
 import logging
 
+from audio_separator.separator.common_separator import CommonSeparator
 from audio_separator.separator.separator import Separator
 
 
@@ -24,3 +25,12 @@ def test_external_checkpoint_and_same_named_yaml_bypass_catalogue(tmp_path):
         str(checkpoint),
         config.name,
     )
+
+
+def test_roformer_is_detected_from_registry_model_config():
+    separator = CommonSeparator.__new__(CommonSeparator)
+    separator.model_data = {"model": {"num_bands": 60}}
+    separator.model_path = "/models/becruily_deux.ckpt"
+    separator.model_name = "Becruily Deux"
+
+    assert separator._detect_roformer_model() is True

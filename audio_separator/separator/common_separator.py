@@ -548,6 +548,15 @@ class CommonSeparator:
         # Check for explicit Roformer flag
         if self.model_data.get("is_roformer", False):
             return True
+
+        # Registry-provided checkpoints do not necessarily include "roformer" in
+        # their filenames. Detect the architecture from the model configuration
+        # as well; these keys are specific to the RoFormer implementations.
+        model_config = self.model_data.get("model", {})
+        if isinstance(model_config, dict) and (
+            "num_bands" in model_config or "freqs_per_bands" in model_config
+        ):
+            return True
             
         # Check model path for Roformer indicators
         if self.model_path and "roformer" in self.model_path.lower():
