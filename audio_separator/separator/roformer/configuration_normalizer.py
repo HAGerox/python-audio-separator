@@ -244,6 +244,15 @@ class ConfigurationNormalizer:
         Returns:
             Detected model type or None if cannot be determined
         """
+        # Config files commonly keep architecture parameters in a nested
+        # ``model`` section. Inspect that section before applying defaults so
+        # MelBand models are not accidentally given BS-RoFormer defaults.
+        nested_model = config.get('model')
+        if isinstance(nested_model, dict):
+            nested_type = self.detect_model_type(nested_model)
+            if nested_type is not None:
+                return nested_type
+
         # Check for BSRoformer-specific parameters
         if 'freqs_per_bands' in config:
             return "bs_roformer"

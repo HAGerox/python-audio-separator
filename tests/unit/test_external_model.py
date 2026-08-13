@@ -1,6 +1,7 @@
 import logging
 
 from audio_separator.separator.common_separator import CommonSeparator
+from audio_separator.separator.roformer.configuration_normalizer import ConfigurationNormalizer
 from audio_separator.separator.separator import Separator
 
 
@@ -34,3 +35,9 @@ def test_roformer_is_detected_from_registry_model_config():
     separator.model_name = "Becruily Deux"
 
     assert separator._detect_roformer_model() is True
+
+
+def test_nested_registry_config_is_detected_as_mel_band_roformer():
+    normalizer = ConfigurationNormalizer()
+
+    assert normalizer.detect_model_type({"model": {"num_bands": 60}}) == "mel_band_roformer"
