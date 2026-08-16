@@ -328,7 +328,12 @@ class MelBandRoformer(Module):
         self.mask_estimators = nn.ModuleList([])
 
         for _ in range(num_stems):
-            mask_estimator = MaskEstimator(dim=dim, dim_inputs=freqs_per_bands_with_complex, depth=mask_estimator_depth)
+            mask_estimator = MaskEstimator(
+                dim=dim,
+                dim_inputs=freqs_per_bands_with_complex,
+                depth=mask_estimator_depth,
+                mlp_expansion_factor=mlp_expansion_factor,
+            )
 
             self.mask_estimators.append(mask_estimator)
 
