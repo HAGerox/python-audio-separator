@@ -337,10 +337,11 @@ class CommonSeparator:
 
         stem_source = spec_utils.normalize(wave=stem_source, max_peak=self.normalization_threshold, min_peak=self.amplification_threshold)
 
-        # Check if the numpy array is empty or contains very low values
+        # A valid separation can be silent when the requested source is absent.
+        # Preserve the declared output contract instead of making callers treat
+        # successful inference as a missing-file failure.
         if np.max(np.abs(stem_source)) < 1e-6:
-            self.logger.warning("Warning: stem_source array is near-silent or empty.")
-            return
+            self.logger.warning("Warning: stem_source array is near-silent or empty; writing it unchanged.")
 
         # If output_dir is specified, create it and join it with stem_path
         if self.output_dir:
@@ -425,10 +426,10 @@ class CommonSeparator:
 
         stem_source = spec_utils.normalize(wave=stem_source, max_peak=self.normalization_threshold, min_peak=self.amplification_threshold)
 
-        # Check if the numpy array is empty or contains very low values
+        # Keep silent outputs: they are valid results and part of the model's
+        # declared output contract.
         if np.max(np.abs(stem_source)) < 1e-6:
-            self.logger.warning("Warning: stem_source array is near-silent or empty.")
-            return
+            self.logger.warning("Warning: stem_source array is near-silent or empty; writing it unchanged.")
 
         # If output_dir is specified, create it and join it with stem_path
         if self.output_dir:

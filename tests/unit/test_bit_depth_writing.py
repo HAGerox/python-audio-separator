@@ -282,7 +282,26 @@ def test_write_16bit_with_soundfile(temp_dir, mock_separator_config):
     print("✅ Test passed: 16-bit audio written correctly with soundfile")
 
 
+@requires_ffmpeg
+def test_near_silent_output_is_written_with_pydub(temp_dir, mock_separator_config):
+    separator = CommonSeparator(mock_separator_config)
+    output_file = "silent_pydub.wav"
+    separator.write_audio_pydub(output_file, np.zeros((4410, 2), dtype=np.float32))
+    full_output_path = os.path.join(temp_dir, output_file)
+    assert os.path.isfile(full_output_path)
+    assert sf.info(full_output_path).frames == 4410
+
+
+def test_near_silent_output_is_written_with_soundfile(temp_dir, mock_separator_config):
+    mock_separator_config["use_soundfile"] = True
+    separator = CommonSeparator(mock_separator_config)
+    output_file = "silent_soundfile.wav"
+    separator.write_audio_soundfile(output_file, np.zeros((4410, 2), dtype=np.float32))
+    full_output_path = os.path.join(temp_dir, output_file)
+    assert os.path.isfile(full_output_path)
+    assert sf.info(full_output_path).frames == 4410
+
+
 if __name__ == "__main__":
     # Run tests with pytest
     pytest.main([__file__, "-v", "-s"])
-
